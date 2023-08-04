@@ -25,7 +25,7 @@ def get_llama(model):
     return model
 
 @torch.no_grad()
-def llama_sequential(model, dataloader, dev):
+def llama_sequential(model, dataloader, dev, args):
     print('Starting ...')
 
     use_cache = model.config.use_cache
@@ -134,7 +134,7 @@ def llama_sequential(model, dataloader, dev):
                 quant_method[name].preproc(
                                     preproc_gptqH=args.pre_gptqH, percdamp=args.percdamp,
                                     preproc_rescale=args.pre_rescale, preproc_proj=args.pre_proj,
-                                    preproc_proj_extra=args.pre_proj_exta)
+                                    preproc_proj_extra=args.pre_proj_extra)
                 if args.quant == 'gptq':
                     quant_method[name].fasterquant(groupsize=args.groupsize)
                 elif args.quant in ['allbal','ldlq','ldlqRG','ldlbal_admm']:
@@ -454,7 +454,7 @@ if __name__ == '__main__':
     parser.add_argument('--save', type=str, default='', help='Save quantized checkpoint under this name.')
     parser.add_argument('--load', type=str, default='', help='Load quantized model checkpoint.')
     parser.add_argument('--check', action='store_true', help='Whether to compute perplexity during benchmarking for verification.')
-    parser.add_argument('--proxY-only', action='store_true', help='Only compute proxy objective (w^T H w).')
+    parser.add_argument('--proxy-only', action='store_true', help='Only compute proxy objective (w^T H w).')
     parser.add_argument('--unbiased', action='store_true', help='Unbiased.')
     parser.add_argument('--incoh_processing', action='store_true', help='Incoherence processing.')
     parser.add_argument('--lazy_batch', action='store_true', help='Lazy batch updates in blocks as used in GPTQ.')
